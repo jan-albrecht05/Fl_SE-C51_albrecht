@@ -1,2 +1,6 @@
 # hello-world
-Leck Eier
+---
+## Mein erstes Projekt auf Github
+ - **HTML**
+ - _CSS_
+ - JS
