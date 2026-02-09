@@ -1,7 +1,7 @@
 /**
  * Fahrkartenautomat Übungsprojekt
  * @author Jan Albrecht (SE-C 51)
- * @version * A3.5 Fehlerbeseitigung
+ * @version * A4.3: Ticketgrenzen im Fahrkartenautomat
  */
 
 import java.util.Scanner;
@@ -20,9 +20,27 @@ class Fahrkartenautomat {
 		// 1 Geldbetrag eingeben
 		System.out.print("Ticketpreis (Euro - Cent): ");
 		double preis = tastatur.nextDouble();
+		
+		// Validierung: Ticketpreis muss größer als 0 sein
+		if (preis <= 0) {
+			System.out.println("FEHLER: Ticketpreis muss größer als 0 sein!");
+			System.out.println("Programm wird beendet.");
+			tastatur.close();
+			return;
+		}
+		
 		zuZahlenderBetragCent = (int) Math.round(preis * 100);  // Umwandlung in Cent
+		
 		System.out.print("Anzahl der Tickets: ");
 		int anzahlTickets = tastatur.nextInt();
+		
+		// Validierung: Anzahl muss zwischen 1 und 10 liegen
+		if (anzahlTickets < 1 || anzahlTickets > 10) {
+			System.out.println("FEHLER: Ungültige Ticketanzahl (erlaubt: 1-10).");
+			System.out.println("Es wird mit der Standardanzahl von 1 Ticket fortgefahren.");
+			anzahlTickets = 1;
+		}
+		
 		System.out.printf("Der Gesamtbetrag für %d Ticket(s) beträgt: %.2f Euro%n", anzahlTickets, (zuZahlenderBetragCent * anzahlTickets) / 100.0);
 
 		// 2 Geldeinwurf
