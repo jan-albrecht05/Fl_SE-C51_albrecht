@@ -1,7 +1,7 @@
 /**
  * Fahrkartenautomat Übungsprojekt
  * @author Jan Albrecht (SE-C 51)
- * @version * A4.3: Ticketgrenzen im Fahrkartenautomat
+ * @version * A4.3: A4.5 Geldeingabe überprüfen
  */
 
 import java.util.Scanner;
@@ -49,9 +49,18 @@ class Fahrkartenautomat {
 		while (eingezahlterGesamtbetragCent < zuZahlenderBetragCent * anzahlTickets) {
 			nochZuZahlenCent = zuZahlenderBetragCent * anzahlTickets - eingezahlterGesamtbetragCent;
 			System.out.printf("Noch zu zahlen: %.2f Euro%n", nochZuZahlenCent / 100.0);
-			System.out.print("Eingabe (mind. 5 Cent, höchstens 2 Euro): ");
+			System.out.print("Eingabe (Münzen: 0.05, 0.10, 0.20, 0.50, 1, 2 | Scheine: 5, 10, 20): ");
 			double muenze = tastatur.nextDouble();
 			eingeworfeneMuenzeCent = (int) Math.round(muenze * 100);
+			
+			// Validierung: Prüfe ob der eingeworfene Betrag gültig ist
+			if (!istGueltigerBetrag(eingeworfeneMuenzeCent)) {
+				System.out.println("FEHLER: Ungültiger Betrag! Bitte nur folgende Werte verwenden:");
+				System.out.println("Münzen: 5 Cent, 10 Cent, 20 Cent, 50 Cent, 1 Euro, 2 Euro");
+				System.out.println("Scheine: 5 Euro, 10 Euro, 20 Euro");
+				continue; // Springe zum nächsten Schleifendurchlauf
+			}
+			
 			eingezahlterGesamtbetragCent = eingezahlterGesamtbetragCent + eingeworfeneMuenzeCent;
 		}
 		
@@ -104,5 +113,22 @@ class Fahrkartenautomat {
 				+ "Wir wünschen Ihnen eine gute Fahrt.");
 
 		tastatur.close();
+	}
+	
+	/**
+	 * Prüft, ob der eingeworfene Betrag ein gültiges Zahlungsmittel ist
+	 * @param centBetrag Betrag in Cent
+	 * @return true wenn gültig, false wenn ungültig
+	 */
+	private static boolean istGueltigerBetrag(int centBetrag) {
+		// Gültige Beträge in Cent
+		int[] gueltigeBetraege = {5, 10, 20, 50, 100, 200, 500, 1000, 2000};
+		
+		for (int betrag : gueltigeBetraege) {
+			if (centBetrag == betrag) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
