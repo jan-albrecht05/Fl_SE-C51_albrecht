@@ -1,7 +1,7 @@
 /**
  * Fahrkartenautomat Übungsprojekt
  * @author Jan Albrecht (SE-C 51)
- * @version * A3.3: Ausgabe des Fahrkartenautomaten anpassen
+ * @version * A3.4: Anzahl der Tickets hinzufügen
  */
 
 import java.util.Scanner;
@@ -20,12 +20,15 @@ class Fahrkartenautomat {
 		// 1 Geldbetrag eingeben
 		System.out.print("Zu zahlender Betrag (Euro): ");
 		zuZahlenderBetrag = tastatur.nextDouble();
+		System.out.print("Anzahl der Tickets: ");
+		int anzahlTickets = tastatur.nextInt();
+		System.out.printf("Der Gesamtbetrag für %d Ticket(s) beträgt: %.2f Euro%n", anzahlTickets, zuZahlenderBetrag * anzahlTickets);
 
 		// 2 Geldeinwurf
 		eingezahlterGesamtbetrag = 0.0;
-		nochZuZahlen = 0.0;
-		while (eingezahlterGesamtbetrag < zuZahlenderBetrag) {
-			nochZuZahlen = zuZahlenderBetrag - eingezahlterGesamtbetrag;
+		nochZuZahlen = zuZahlenderBetrag * anzahlTickets;
+		while (eingezahlterGesamtbetrag < zuZahlenderBetrag * anzahlTickets) {
+			nochZuZahlen = zuZahlenderBetrag * anzahlTickets - eingezahlterGesamtbetrag;
 			System.out.printf("Noch zu zahlen: %.2f Euro%n", nochZuZahlen);
 			System.out.print("Eingabe (mind. 5 Cent, höchstens 2 Euro): ");
 			eingeworfeneMuenze = tastatur.nextDouble();
@@ -46,7 +49,7 @@ class Fahrkartenautomat {
 		System.out.println("\n\n");
 		
 		// 4 Rückgeldberechnung und -ausgabe
-		rueckgabebetrag = eingezahlterGesamtbetrag - zuZahlenderBetrag;
+		rueckgabebetrag = eingezahlterGesamtbetrag - zuZahlenderBetrag * anzahlTickets;
 		if (rueckgabebetrag > 0.0) {
 			System.out.printf("Der Rückgabebetrag in Höhe von %.2f Euro%n", rueckgabebetrag);
 			System.out.println("wird in folgenden Münzen ausgezahlt:");
