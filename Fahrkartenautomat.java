@@ -1,7 +1,7 @@
 /**
  * Fahrkartenautomat Übungsprojekt
  * @author Jan Albrecht (SE-C 51)
- * @version * A5.3: Wiederholung der Eingabe der Ticketanzahl
+ * @version * A5.4: Fahrkartenauswahl
  */
 
 import java.util.Scanner;
@@ -16,20 +16,37 @@ class Fahrkartenautomat {
 		int eingeworfeneMuenzeCent;
 		int rueckgabebetragCent;
 		int nochZuZahlenCent;
+		String ticketArt;
 
-		// 1 Geldbetrag eingeben
-		System.out.print("Ticketpreis (Euro - Cent): ");
-		double preis = tastatur.nextDouble();
-		
-		// Validierung: Ticketpreis muss größer als 0 sein
-		if (preis <= 0) {
-			System.out.println("FEHLER: Ticketpreis muss größer als 0 sein!");
-			System.out.println("Programm wird beendet.");
-			tastatur.close();
-			return;
-		}
-		
-		zuZahlenderBetragCent = (int) Math.round(preis * 100);  // Umwandlung in Cent
+		// 1 Fahrkartenart wählen (aktuelle VBB-Preise)
+		int ticketAuswahl;
+		do {
+			System.out.println("Bitte Fahrkartenart auswählen:");
+			System.out.println("1 - Kurzstrecke Berlin (2,80 Euro)");
+			System.out.println("2 - Einzelfahrausweis Berlin AB (4,00 Euro)");
+			System.out.println("3 - 4-Fahrten-Karte Berlin AB (12,40 Euro)");
+			System.out.print("Ihre Auswahl (1-3): ");
+			ticketAuswahl = tastatur.nextInt();
+
+			switch (ticketAuswahl) {
+				case 1:
+					ticketArt = "Kurzstrecke Berlin";
+					zuZahlenderBetragCent = 280;
+					break;
+				case 2:
+					ticketArt = "Einzelfahrausweis Berlin AB";
+					zuZahlenderBetragCent = 400;
+					break;
+				case 3:
+					ticketArt = "4-Fahrten-Karte Berlin AB";
+					zuZahlenderBetragCent = 1240;
+					break;
+				default:
+					ticketArt = "";
+					zuZahlenderBetragCent = 0;
+					System.out.println("  << Bitte wählen Sie eine gültige Fahrkartenart (1 bis 3). >>");
+			}
+		} while (ticketAuswahl < 1 || ticketAuswahl > 3);
 		
 		// Ticketanzahl mit Wiederholung bei ungültiger Eingabe
 		int anzahlTickets;
@@ -43,13 +60,14 @@ class Fahrkartenautomat {
 			}
 		} while (anzahlTickets < 1 || anzahlTickets > 10);
 		
-		System.out.printf("Der Gesamtbetrag für %d Ticket(s) beträgt: %.2f Euro%n", anzahlTickets, (zuZahlenderBetragCent * anzahlTickets) / 100.0);
+		int gesamtbetragCent = zuZahlenderBetragCent * anzahlTickets;
+		System.out.printf("Der Gesamtbetrag für %d x %s beträgt: %.2f Euro%n", anzahlTickets, ticketArt, gesamtbetragCent / 100.0);
 
 		// 2 Geldeinwurf
 		eingezahlterGesamtbetragCent = 0;
-		nochZuZahlenCent = zuZahlenderBetragCent * anzahlTickets;
-		while (eingezahlterGesamtbetragCent < zuZahlenderBetragCent * anzahlTickets) {
-			nochZuZahlenCent = zuZahlenderBetragCent * anzahlTickets - eingezahlterGesamtbetragCent;
+		nochZuZahlenCent = gesamtbetragCent;
+		while (eingezahlterGesamtbetragCent < gesamtbetragCent) {
+			nochZuZahlenCent = gesamtbetragCent - eingezahlterGesamtbetragCent;
 			System.out.printf("Noch zu zahlen: %.2f Euro%n", nochZuZahlenCent / 100.0);
 			System.out.print("Eingabe (Münzen: 0.05, 0.10, 0.20, 0.50, 1, 2 | Scheine: 5, 10, 20): ");
 			double muenze = tastatur.nextDouble();
@@ -80,7 +98,7 @@ class Fahrkartenautomat {
 		System.out.println("\n\n");
 		
 		// 4 Rückgeldberechnung und -ausgabe
-		rueckgabebetragCent = eingezahlterGesamtbetragCent - zuZahlenderBetragCent * anzahlTickets;
+		rueckgabebetragCent = eingezahlterGesamtbetragCent - gesamtbetragCent;
 		if (rueckgabebetragCent > 0) {
 			System.out.printf("Der Rückgabebetrag in Höhe von %.2f Euro%n", rueckgabebetragCent / 100.0);
 			System.out.println("wird in folgenden Münzen ausgezahlt:");
