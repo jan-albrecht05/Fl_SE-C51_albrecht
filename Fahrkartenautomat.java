@@ -1,67 +1,38 @@
 /**
  * Fahrkartenautomat Übungsprojekt
  * @author Jan Albrecht (SE-C 51)
- * @version * A5.4: Fahrkartenauswahl
+ * @version * A7.4: Das Fahrkartenarray
  */
 
 import java.util.Scanner;
 
 class Fahrkartenautomat {
+	private static final double[] FAHRKARTEN_PREISE = { 3.0, 3.5, 3.8, 2.0, 8.6, 9.2, 10.0, 9.4, 12.6, 13.8, 25.5, 26.0, 26.5 };
+	private static final String[] FAHRKARTEN_BEZEICHNUNGEN = {
+		"Einzelfahrschein AB",
+		"Einzelfahrschein BC",
+		"Einzelfahrschein ABC",
+		"Kurzstrecke AB",
+		"Tageskarte AB",
+		"Tageskarte BC",
+		"Tageskarte ABC",
+		"4-Fahrten-Karte AB",
+		"4-Fahrten-Karte BC",
+		"4-Fahrten-Karte ABC",
+		"Kleingruppen-Tageskarte AB",
+		"Kleingruppen-Tageskarte BC",
+		"Kleingruppen-Tageskarte ABC"
+	};
+
 	public static void main(String[] args) {
 
 		Scanner tastatur = new Scanner(System.in);
 
-		int zuZahlenderBetragCent;      // in Cent gespeichert
+		int gesamtbetragCent = fahrkartenbestellungErfassen(tastatur);
 		int eingezahlterGesamtbetragCent;
 		int eingeworfeneMuenzeCent;
 		int rueckgabebetragCent;
 		int nochZuZahlenCent;
-		String ticketArt;
-
-		// 1 Fahrkartenart wählen (aktuelle VBB-Preise)
-		int ticketAuswahl;
-		do {
-			System.out.println("Bitte Fahrkartenart auswählen:");
-			System.out.println("1 - Kurzstrecke Berlin (2,80 Euro)");
-			System.out.println("2 - Einzelfahrausweis Berlin AB (4,00 Euro)");
-			System.out.println("3 - 4-Fahrten-Karte Berlin AB (12,40 Euro)");
-			System.out.print("Ihre Auswahl (1-3): ");
-			ticketAuswahl = tastatur.nextInt();
-
-			switch (ticketAuswahl) {
-				case 1:
-					ticketArt = "Kurzstrecke Berlin";
-					zuZahlenderBetragCent = 280;
-					break;
-				case 2:
-					ticketArt = "Einzelfahrausweis Berlin AB";
-					zuZahlenderBetragCent = 400;
-					break;
-				case 3:
-					ticketArt = "4-Fahrten-Karte Berlin AB";
-					zuZahlenderBetragCent = 1240;
-					break;
-				default:
-					ticketArt = "";
-					zuZahlenderBetragCent = 0;
-					System.out.println("  << Bitte wählen Sie eine gültige Fahrkartenart (1 bis 3). >>");
-			}
-		} while (ticketAuswahl < 1 || ticketAuswahl > 3);
-		
-		// Ticketanzahl mit Wiederholung bei ungültiger Eingabe
-		int anzahlTickets;
-		do {
-			System.out.print("Anzahl der Tickets: ");
-			anzahlTickets = tastatur.nextInt();
-			
-			// Validierung: Anzahl muss zwischen 1 und 10 liegen
-			if (anzahlTickets < 1 || anzahlTickets > 10) {
-				System.out.println("  << Wählen Sie bitte eine Anzahl von 1 bis 10 Tickets aus. >>");
-			}
-		} while (anzahlTickets < 1 || anzahlTickets > 10);
-		
-		int gesamtbetragCent = zuZahlenderBetragCent * anzahlTickets;
-		System.out.printf("Der Gesamtbetrag für %d x %s beträgt: %.2f Euro%n", anzahlTickets, ticketArt, gesamtbetragCent / 100.0);
 
 		// 2 Geldeinwurf
 		eingezahlterGesamtbetragCent = 0;
@@ -133,6 +104,40 @@ class Fahrkartenautomat {
 				+ "Wir wünschen Ihnen eine gute Fahrt.");
 
 		tastatur.close();
+	}
+
+	public static int fahrkartenbestellungErfassen(Scanner tastatur) {
+		int ticketAuswahl;
+		do {
+			System.out.println("Wählen Sie eine Fahrkarte aus:");
+			for (int i = 0; i < FAHRKARTEN_BEZEICHNUNGEN.length; i++) {
+				System.out.printf("%s (%.2f Euro)%n", FAHRKARTEN_BEZEICHNUNGEN[i], FAHRKARTEN_PREISE[i]);
+			}
+			System.out.print("Ihre Auswahl (1-" + FAHRKARTEN_BEZEICHNUNGEN.length + "): ");
+			ticketAuswahl = tastatur.nextInt();
+
+			if (ticketAuswahl < 1 || ticketAuswahl > FAHRKARTEN_BEZEICHNUNGEN.length) {
+				System.out.println("  << Bitte wählen Sie eine gültige Fahrkartenart. >>");
+			}
+		} while (ticketAuswahl < 1 || ticketAuswahl > FAHRKARTEN_BEZEICHNUNGEN.length);
+
+		int anzahlTickets;
+		do {
+			System.out.print("Anzahl der Tickets: ");
+			anzahlTickets = tastatur.nextInt();
+
+			if (anzahlTickets < 1 || anzahlTickets > 10) {
+				System.out.println("  << Wählen Sie bitte eine Anzahl von 1 bis 10 Tickets aus. >>");
+			}
+		} while (anzahlTickets < 1 || anzahlTickets > 10);
+
+		double einzelpreisEuro = FAHRKARTEN_PREISE[ticketAuswahl - 1];
+		int gesamtbetragCent = (int) Math.round(einzelpreisEuro * 100) * anzahlTickets;
+		System.out.printf("Der Gesamtbetrag für %d x %s beträgt: %.2f Euro%n",
+			anzahlTickets,
+			FAHRKARTEN_BEZEICHNUNGEN[ticketAuswahl - 1],
+			gesamtbetragCent / 100.0);
+		return gesamtbetragCent;
 	}
 	
 	/**
